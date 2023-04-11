@@ -1,9 +1,11 @@
 from src.read_data import InputData
 from src.log_setup import setup_log
 from src.modelA import ModelA
+from src.modelA import *
 from src.utils import ProductInfoHeader, DemandHeader
 from src.config import *
-
+from src.function import pickle_dump, pickle_load
+from src.output_sol import OutputSol
 import time
 import logging
 
@@ -14,10 +16,23 @@ if __name__ == '__main__':
     output_folder = 'output'
     setup_log(output_folder)
     try:
-        input = InputData(input_folder, output_folder, rackNum=25)
+        rackNum = 25
+        input = InputData(input_folder, output_folder, rackNum=rackNum)
         input.generate_data()
 
+        month = '1'
         modelA = ModelA(input, month='1')
+        modelA.build_model()
+        modelA.solve_maximize_freq_benefit_obj()
+        modelA_solution_dict = modelA.get_solution_dict()
+
+        pickle_dump(input.output_folder + '/modelA_sol_rack_{}_month_{}.pkl'.format(rackNum, month),
+                    modelA_solution_dict)
+        modelA_solution_dict = pickle_load(
+            input.output_folder + '/modelA_sol_rack_{}_month_{}.pkl'.format(rackNum, month))
+
+        outputSol = OutputSol(modelA_solution_dict, input)
+
 
         ed = time.time()
         logging.info('total running time: %s' % (ed - st))

@@ -16,3 +16,7 @@ class ProductInfoHeader:
 
 class DemandHeader:
     product = 'Product'
+
+
+class Separator:
+    splitStr = '/'
