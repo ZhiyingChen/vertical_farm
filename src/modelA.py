@@ -23,17 +23,18 @@ class ModelA:
         # self.opt = SolverFactory('gurobi_persistent')
         self.model = ConcreteModel('Step1ContinuousModel')
         self.obj_dict = {}
-        self.shelfNum = 10
+        self.shelf_num = self.data_input.shelf_num
+        self.rack_num = self.data_input.rack_num
         self.month = month
 
     def create_pyomo_sets(self):
         self.model.product_Set = Set(initialize=[p for p in self.data_input.products])
         logging.info("Created  self.model.product_Set: %s"%(len(self.model.product_Set)))
 
-        self.model.rack_Set = Set(initialize=list(range(1, self.data_input.rack_num + 1)))
+        self.model.rack_Set = Set(initialize=list(range(1, self.rack_num + 1)))
         logging.info("Created self.model.rack_Set: %s"%(len(self.model.rack_Set)))
 
-        self.model.shelf_Set = Set(initialize=list(range(1, self.shelfNum+1)))
+        self.model.shelf_Set = Set(initialize=list(range(1, self.shelf_num+1)))
         logging.info('Created self.model.shelf_Set: %s'%(len(self.model.shelf_Set)))
 
         self.model.product_tray_Set = Set(initialize=[(p, i) for p, dmd_dict in self.data_input.demands.items()
@@ -82,7 +83,7 @@ class ModelA:
             self.opt.set_instance(self.model)
     def solve_maximize_freq_benefit_obj(self):
         obj = sum(
-            (self.shelfNum + 1 - s) * self.data_input.products[p][pih.waterFreq] *
+            (self.shelf_num + 1 - s) * self.data_input.products[p][pih.waterFreq] *
             self.model.whether_product_tray_rack_shelf_var[p, i, r, s] for
             (p, i, r, s) in
             self.model.product_tray_rack_shelf_Set)

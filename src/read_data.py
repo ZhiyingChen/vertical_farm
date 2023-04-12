@@ -1,10 +1,11 @@
 import pandas as pd
 import logging
+from collections import defaultdict
 from .config import *
 from .log_setup import setup_log
 
 class InputData:
-    def __init__(self, input_folder, output_folder, rackNum):
+    def __init__(self, input_folder, output_folder, rackNum, shelfNum):
         setup_log('../output', section_name='VerticalFarm')
         self.input_folder = input_folder
         self.output_folder = output_folder
@@ -12,11 +13,12 @@ class InputData:
         self.demands = dict()
         self.month_days = dict()
         self.rack_num = rackNum
+        self.shelf_num = shelfNum
 
     def read_product_info(self):
         from .utils import ProductInfoHeader as ph
         product_df = pd.read_csv(self.input_folder + PRODUCT_INFO_FILE, index_col=ph.product)
-        product_dict = dict()
+        product_dict = defaultdict(dict)
         for idx, r in product_df.iterrows():
             product_dict[idx] = r.to_dict()
         logging.info("Finished reading demands: %s" % (len(product_dict)))

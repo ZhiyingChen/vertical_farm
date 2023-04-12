@@ -20,3 +20,6 @@ class DemandHeader:
 
 class Separator:
     splitStr = '/'
+
+class String:
+    empty = 'Empty'

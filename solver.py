@@ -15,9 +15,12 @@ if __name__ == '__main__':
     input_folder = 'dataSet'
     output_folder = 'output'
     setup_log(output_folder)
+    shelfNum = 10
+
+
     try:
         rackNum = 25
-        input = InputData(input_folder, output_folder, rackNum=rackNum)
+        input = InputData(input_folder, output_folder, rackNum=rackNum, shelfNum=shelfNum)
         input.generate_data()
 
         month = '1'
@@ -32,7 +35,7 @@ if __name__ == '__main__':
             input.output_folder + '/modelA_sol_rack_{}_month_{}.pkl'.format(rackNum, month))
 
         outputSol = OutputSol(modelA_solution_dict, input)
-
+        outputSol.generate_modelA_sol()
 
         ed = time.time()
         logging.info('total running time: %s' % (ed - st))
