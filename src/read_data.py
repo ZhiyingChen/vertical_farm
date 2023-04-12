@@ -3,17 +3,32 @@ import logging
 from collections import defaultdict
 from .config import *
 from .log_setup import setup_log
+from .utils import ProductInfoHeader as pih
+
+class MonthInfo:
+    def __init__(self, rackNum, month):
+        self.rack_num = rackNum
+        self.month = month
+        self.wBot_num = None
+        self.lBot_num = None
+        self.month_income = None
+        self.month_supposed_income = None
+
+
 
 class InputData:
-    def __init__(self, input_folder, output_folder, rackNum, shelfNum):
+    def __init__(self, input_folder, output_folder, shelfNum):
         setup_log('../output', section_name='VerticalFarm')
         self.input_folder = input_folder
         self.output_folder = output_folder
         self.products = dict()
         self.demands = dict()
         self.month_days = dict()
-        self.rack_num = rackNum
+        self.month_supposed_income = dict()
         self.shelf_num = shelfNum
+        self.rack_light_round_duration = dict()
+        self.rack_water_round_duration = dict()
+        self.month_rack_sol_dict = defaultdict(dict)
 
     def read_product_info(self):
         from .utils import ProductInfoHeader as ph
@@ -51,10 +66,19 @@ class InputData:
         logging.info("Finished generating month_days.")
         return month_days
 
+    def generate_supposed_income(self):
+        month_supposed_income = dict()
+        for product, month_demand in self.demands.items():
+            for month, dmd_num in month_demand.items():
+                curr_income = month_supposed_income.get(month, 0)
+                income = self.products[product][pih.ProfitPerShelf] * dmd_num
+                month_supposed_income[month] = curr_income + income
+        return month_supposed_income
     def generate_data(self):
         self.products = self.read_product_info()
         self.demands = self.read_demand()
         self.month_days = self.generate_month_days()
+        self.month_supposed_income = self.generate_supposed_income()
 
 
 if __name__ == '__main__':

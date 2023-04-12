@@ -3,16 +3,16 @@ from pyomo.environ import Binary, NonNegativeIntegers, NonNegativeReals
 from pyomo.kernel import SolverFactory, value, SolverStatus
 import logging
 import os
-import pickle
+
 
 from .read_data import InputData
 from .utils import ProductInfoHeader as pih
 from .utils import Separator as sp
-from src.config import *
+from .config import *
 
 class ModelA:
 
-    def __init__(self, input_data: InputData, month):
+    def __init__(self, input_data: InputData, rack_num, month):
         self.data_input = input_data
         self.output_lp_file = True
         self.use_api_mode = False
@@ -21,10 +21,10 @@ class ModelA:
         else:
             self.opt = SolverFactory('cplex_direct')
         # self.opt = SolverFactory('gurobi_persistent')
-        self.model = ConcreteModel('Step1ContinuousModel')
+        self.model = ConcreteModel('modelA')
         self.obj_dict = {}
         self.shelf_num = self.data_input.shelf_num
-        self.rack_num = self.data_input.rack_num
+        self.rack_num = rack_num
         self.month = month
 
     def create_pyomo_sets(self):
