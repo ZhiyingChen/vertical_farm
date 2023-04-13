@@ -24,7 +24,7 @@ Install CPLEX (For this project, you need a CPLEX version >= 20.1.0.):
 
 To run project:
 
-    1. put your input data in source/input, or set your data path in solver.py
+    1. put your input data files in dataSet, or set your data path in solver.py
     2. execute python solver.py
 	
 
