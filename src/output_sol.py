@@ -2,9 +2,11 @@ import pandas as pd
 import logging
 from collections import defaultdict
 import numpy as np
+from math import ceil
 from .read_data import InputData, MonthInfo
 from .utils import ProductInfoHeader as pih
 from .utils import String
+from .BFD import Bin, Pack
 class OutputSol:
 
     def __init__(self, modelA_solution_dict: dict, data_input: InputData, rack_num, month):
@@ -143,10 +145,38 @@ class OutputSol:
 
     # endregion
 
-    # generate modelB solution
+    # region generate modelB solution
     def get_robot_num(self):
         self.wBot_num = sum(v for k, v in self.modelB_solution_dict.get('whether_wBot_var', dict()).items())
         self.lBot_num = sum(v for k, v in self.modelB_solution_dict.get('whether_lBot_var', dict()).items())
         monthInfo = self.data_input.month_rack_sol_dict[self.rack_num][self.month]
         monthInfo.wBot_num = self.wBot_num
         monthInfo.lBot_num = self.lBot_num
+
+        logging.info("wBot_num: %s, lBot_num: %s"%(self.wBot_num, self.lBot_num))
+
+    # endregion
+
+    # region generate BFD solution
+    def generate_robot_num_by_BFD(self):
+        # wBotNum
+        wBot_rounds = [round_dur for rack, round_dur_lt in self.rack_water_round_duration.items()
+                       for round_dur in round_dur_lt if round_dur > 1e-4]
+        water_Pack = Pack(values=wBot_rounds, maxVal=self.data_input.wBot_slot_length)
+        wBot_slots = water_Pack.BFDPack()
+        self.wBot_num = ceil(len(wBot_slots) / self.data_input.wBot_slots_num)
+
+        # lBotNum
+        lBot_rounds = [round_dur for rack, round_dur in self.rack_light_round_duration.items()
+                       if round_dur > 1e-4]
+        light_Pack = Pack(values=lBot_rounds, maxVal=self.data_input.lBot_slot_length)
+        lBot_slots = light_Pack.BFDPack()
+        self.lBot_num = ceil(len(lBot_slots) / self.data_input.lBot_slots_num)
+
+        monthInfo = self.data_input.month_rack_sol_dict[self.rack_num][self.month]
+        monthInfo.wBot_num = self.wBot_num
+        monthInfo.lBot_num = self.lBot_num
+
+        logging.info("wBot_num: %s, lBot_num: %s" % (self.wBot_num, self.lBot_num))
+        logging.info("Finish generate_robot_num_by_BFD.")
+    # endregion

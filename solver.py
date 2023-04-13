@@ -18,6 +18,8 @@ if __name__ == '__main__':
     setup_log(output_folder)
     shelfNum = 10
 
+    adoptBFD = True
+
     try:
 
         input = InputData(input_folder, output_folder, shelfNum=shelfNum)
@@ -43,18 +45,21 @@ if __name__ == '__main__':
                 outputSol = OutputSol(modelA_solution_dict, input, rack_num=rackNum, month=month)
                 outputSol.generate_modelA_sol()
 
-                modelB = ModelB(input, rack_num=rackNum)
-                modelB.build_model()
-                modelB.solve_minimize_robot_num_obj()
-                modelB_solution_dict = modelB.get_solution_dict()
+                if not adoptBFD:
+                    modelB = ModelB(input, rack_num=rackNum)
+                    modelB.build_model()
+                    modelB.solve_minimize_robot_num_obj()
+                    modelB_solution_dict = modelB.get_solution_dict()
 
-                pickle_dump(input.output_folder + '/modelB_sol_rack_{}_month_{}.pkl'.format(rackNum, month),
-                            modelB_solution_dict)
-                modelB_solution_dict = pickle_load(
-                    input.output_folder + '/modelB_sol_rack_{}_month_{}.pkl'.format(rackNum, month))
+                    pickle_dump(input.output_folder + '/modelB_sol_rack_{}_month_{}.pkl'.format(rackNum, month),
+                                modelB_solution_dict)
+                    modelB_solution_dict = pickle_load(
+                        input.output_folder + '/modelB_sol_rack_{}_month_{}.pkl'.format(rackNum, month))
 
-                outputSol.modelB_solution_dict = modelB_solution_dict
-                outputSol.get_robot_num()
+                    outputSol.modelB_solution_dict = modelB_solution_dict
+                    outputSol.get_robot_num()
+                else:
+                    outputSol.generate_robot_num_by_BFD()
 
         ed = time.time()
         logging.info('total running time: %s' % (ed - st))

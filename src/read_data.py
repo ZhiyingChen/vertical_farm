@@ -23,6 +23,10 @@ class InputData:
         setup_log('../output', section_name='VerticalFarm')
         self.input_folder = input_folder
         self.output_folder = output_folder
+        self.wBot_slot_length = 120
+        self.lBot_slot_length = 180
+        self.wBot_slots_num = 8
+        self.lBot_slots_num = 5
         self.products = dict()
         self.demands = dict()
         self.month_days = dict()

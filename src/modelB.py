@@ -23,10 +23,10 @@ class ModelB:
         # self.opt = SolverFactory('gurobi_persistent')
         self.model = ConcreteModel('modelB')
         self.obj_dict = {}
-        self.wBot_slot_length = 120
-        self.lBot_slot_length = 180
-        self.wBot_slots_num = 8
-        self.lBot_slots_num = 5
+        self.wBot_slot_length = self.data_input.wBot_slot_length
+        self.lBot_slot_length = self.data_input.lBot_slot_length
+        self.wBot_slots_num = self.data_input.wBot_slots_num
+        self.lBot_slots_num = self.data_input.lBot_slots_num
         self.rack_num = rack_num
         self.rack_water_round_duration = self.data_input.rack_water_round_duration
         self.rack_light_round_duration = self.data_input.rack_light_round_duration
