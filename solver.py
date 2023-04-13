@@ -17,7 +17,6 @@ if __name__ == '__main__':
     output_folder = 'output'
     setup_log(output_folder)
     shelfNum = 10
-
     adoptBFD = True
 
     try:
