@@ -14,6 +14,8 @@ class MonthInfo:
         self.month_income = None
         self.month_supposed_income = None
 
+    def __repr__(self):
+        return "MonthInfo(rackNum = %s, month = %s)" % (self.rack_num, self.month)
 
 
 class InputData:
