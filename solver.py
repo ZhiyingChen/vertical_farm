@@ -24,14 +24,14 @@ if __name__ == '__main__':
         input = InputData(input_folder, output_folder, shelfNum=shelfNum)
         input.generate_data()
 
-        rackNumLt = [i**2 for i in range(5, 15)]
+        rackNumLt = [i**2 for i in range(5, 6)]
 
         for rackNum in rackNumLt:
-            for month in range(1, 13):
+            for month in range(1, 3):
                 month = str(month)
 
                 logging.info("Begin solving problems for rack %s, month %s" % (rackNum, month))
-                modelA = ModelA(input, rack_num=rackNum, month='1')
+                modelA = ModelA(input, rack_num=rackNum, month=month)
                 modelA.build_model()
                 modelA.solve_maximize_freq_benefit_obj()
                 modelA_solution_dict = modelA.get_solution_dict()
@@ -59,6 +59,8 @@ if __name__ == '__main__':
                     outputSol.get_robot_num()
                 else:
                     outputSol.generate_robot_num_by_BFD()
+
+        input.output_month_rack_info()
 
         ed = time.time()
         logging.info('total running time: %s' % (ed - st))

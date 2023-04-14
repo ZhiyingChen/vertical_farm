@@ -86,6 +86,41 @@ class InputData:
         self.month_days = self.generate_month_days()
         self.month_supposed_income = self.generate_supposed_income()
 
+    def output_month_rack_info(self):
+        from math import sqrt
+        from .utils import OutRackMonthSolHeader as rmh
+        record_lt = []
+        for rack_num, monthInfo_dict in self.month_rack_sol_dict.items():
+            for month, monthInfo in monthInfo_dict.items():
+                farm_cost = 10 * rack_num + 200 * (sqrt(rack_num) + 3) ** 2
+                robot_cost = 5 * (monthInfo.lBot_num+monthInfo.wBot_num) * self.month_days[month]
+                profit = round(monthInfo.month_income - farm_cost - robot_cost)
+                record = {
+                    rmh.rackNum: rack_num,
+                    rmh.month: month,
+                    rmh.wBotNum: monthInfo.wBot_num,
+                    rmh.lBotNum: monthInfo.lBot_num,
+                    rmh.monthIncom: round(monthInfo.month_income),
+                    rmh.monthSuppIncom: round(monthInfo.month_supposed_income),
+                    rmh.farmCost: farm_cost,
+                    rmh.robotCost: robot_cost,
+                    rmh.profit: profit
+                }
+                record_lt.append(record)
+        col = [
+            rmh.rackNum,
+            rmh.month,
+            rmh.wBotNum,
+            rmh.lBotNum,
+            rmh.monthIncom,
+            rmh.monthSuppIncom,
+            rmh.farmCost,
+            rmh.robotCost,
+            rmh.profit
+        ]
+        out_df = pd.DataFrame(record_lt, columns=col, dtype=object)
+        out_df.to_csv(self.output_folder +OUT_SOL_FILE,
+                              index=False)
 
 if __name__ == '__main__':
 

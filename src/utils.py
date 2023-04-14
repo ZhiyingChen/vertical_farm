@@ -17,6 +17,16 @@ class ProductInfoHeader:
 class DemandHeader:
     product = 'Product'
 
+class OutRackMonthSolHeader:
+    rackNum = 'Rack Num'
+    month = 'Month'
+    wBotNum = 'Water Robot Number'
+    lBotNum = 'Light Robot Number'
+    monthIncom = 'Month Income'
+    monthSuppIncom = 'Month Supposed Income'
+    farmCost = 'Farm Cost'
+    robotCost = 'Robot Cost'
+    profit = 'Profit'
 
 class Separator:
     splitStr = '/'

@@ -127,12 +127,13 @@ class OutputSol:
         income = 0
         for rack, shelf_plant_dict in self.rack_shelf_plant_dict.items():
             for shelf_level, plant_lt in shelf_plant_dict.items():
-                income += sum(self.data_input.products[plant[0]].get(pih.pricePerShelf, 0) for plant in plant_lt)
+                income += sum(self.data_input.products[plant[0]].get(pih.ProfitPerShelf, 0) for plant in plant_lt)
         monthInfo.month_income = income
 
         # supposed_income
         monthInfo.month_supposed_income = self.data_input.month_supposed_income.get(self.month, 0)
         self.data_input.month_rack_sol_dict[self.rack_num][self.month] = monthInfo
+
     def generate_modelA_sol(self):
         self.plant_tray_pos_dict, self.rack_shelf_plant_dict = self.generate_product_rack_arrangement()
         self.rack_shelf_plant_first_day_dict = self.generate_first_day_arrangement()
